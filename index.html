@@ -6,16 +6,14 @@
     <meta name="description" content="Oqu Kerek web app main page">
     <title>Oqu Kerek · v0.1.0</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/jumbotron/">
-
-    <link href="https://getbootstrap.com/docs/5.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 
     <!-- Favicons -->
     <meta name="theme-color" content="#712cf9">
 </head>
 <body>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 <script>
 document.addEventListener('submit', (e) => {
     // Store reference to form to make later code easier to read
@@ -24,12 +22,14 @@ document.addEventListener('submit', (e) => {
     requestBody.url = form.get('book-view-url');
     console.log('Form data', form)
     console.log('Request body ', requestBody)
+    const token = sessionStorage.getItem('id_token');
 
-    fetch('https://sjlw4ut0p2.execute-api.us-east-1.amazonaws.com/dev/books', {
+    fetch('https://18xc0k8n6c.execute-api.us-east-1.amazonaws.com/dev/books', {
             method: 'POST',
             mode: 'cors',
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Authorization': token
             },
             body: JSON.stringify(requestBody),
         })
@@ -47,6 +47,7 @@ document.addEventListener('submit', (e) => {
     // Prevent the default form submit
     e.preventDefault();
 });
+
 </script>
 
 <main>
@@ -70,7 +71,11 @@ document.addEventListener('submit', (e) => {
                                placeholder="https://kazneb.kz/bookView/view/?brId=1160737&simple=true&lang=kk">
                     </div>
                     <div class="alert alert-success" role="alert" style="display:none"></div>
+
                     <div class="d-grid gap-2 col-4 mx-auto">
+                        <a class="btn btn-primary" role="button" id="sign-in-button" href="https://oqu-kerek-api.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=5cmlljeevjm8mh9ujlfdcicuci&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Fexample.com">
+                            <img src="images/btn_google_dark_normal_ios.svg" height="25" alt="Google icon" /> Sign In with Google
+                        </a>
                         <button type="submit" class="btn btn-primary">Download</button>
                     </div>
                 </form>
@@ -82,5 +87,45 @@ document.addEventListener('submit', (e) => {
         </footer>
     </div>
 </main>
+
+<script>
+let params = (new URL(document.location)).searchParams;
+let code = params.get("code");
+console.log(code)
+if (code) {
+    sessionStorage.setItem('code', code);
+
+    var headers = new Headers();
+    headers.append("Content-Type", "application/x-www-form-urlencoded");
+
+    var urlencoded = new URLSearchParams();
+    urlencoded.append("grant_type", "authorization_code");
+    urlencoded.append("client_id", "5cmlljeevjm8mh9ujlfdcicuci");
+    urlencoded.append("redirect_uri", "https://master.d2os6k5rlbet0g.amplifyapp.com/callback");
+    urlencoded.append("code", code);
+
+    var requestOptions = {
+        method: 'POST',
+        headers: headers,
+        body: urlencoded,
+        redirect: 'follow'
+    };
+
+    fetch("https://oqu-kerek-api.auth.us-east-1.amazoncognito.com/oauth2/token", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+        console.log(result)
+        sessionStorage.setItem('id_token', result.id_token);
+        sessionStorage.setItem('refresh_token', result.refresh_token);
+
+        })
+        .catch(error => console.log('error', error));
+}
+let keys = Object.keys(sessionStorage);
+for (let key of keys) {
+    console.log(`${key}: ${sessionStorage.getItem(key)}`);
+}
+</script>
+
 </body>
 </html>
