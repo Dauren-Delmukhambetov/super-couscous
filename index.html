@@ -195,22 +195,16 @@ if (code) {
     fetch("https://oqu-kerek-api.auth.us-east-1.amazoncognito.com/oauth2/token", requestOptions)
         .then(response => response.json())
         .then(result => {
-            console.log(result)
             sessionStorage.setItem('id_token', result.id_token);
             sessionStorage.setItem('refresh_token', result.refresh_token);
             authenticationPostProcessor();
             var tokenPayload = parseJwt(result.id_token);
-            console.log(tokenPayload)
             sessionStorage.setItem('picture', tokenPayload.picture);
             sessionStorage.setItem('email', tokenPayload.email);
             sessionStorage.setItem('name', tokenPayload.name);
             initUserProfile();
         })
         .catch(error => console.log('error', error));
-}
-let keys = Object.keys(sessionStorage);
-for (let key of keys) {
-    console.log(`${key}: ${sessionStorage.getItem(key)}`);
 }
 </script>
 
