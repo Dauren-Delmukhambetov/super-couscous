@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Oqu Kerek web app main page">
+    <meta name="description" content="Oqu Kerek Web App main page">
     <title>Oqu Kerek · v0.1.0</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
@@ -16,41 +16,6 @@
 <body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
-<script>
-document.addEventListener('submit', (e) => {
-    // Store reference to form to make later code easier to read
-    const form = new FormData(e.target);
-    const requestBody = new Object();
-    requestBody.url = form.get('book-view-url');
-    console.log('Form data', form)
-    console.log('Request body ', requestBody)
-    const token = sessionStorage.getItem('id_token');
-
-    fetch('https://18xc0k8n6c.execute-api.us-east-1.amazonaws.com/dev/books', {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': token
-            },
-            body: JSON.stringify(requestBody),
-        })
-        .then((res) => {
-            var data = res.json();
-            return data;
-        })
-        .then((json) => {
-            console.log(json.title);
-            let alert = document.querySelector("div.alert");
-            alert.innerText = "The book " + json.title + " is loading, the link to download will be sent to your email"
-            alert.style.display = 'block'
-        });
-
-    // Prevent the default form submit
-    e.preventDefault();
-});
-
-</script>
 
 <main>
     <div class="container py-4">
@@ -71,8 +36,8 @@ document.addEventListener('submit', (e) => {
                         <img src="images/btn_google_dark_normal_ios.svg" class="dropdown-toggle rounded float-end" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" id="profile-picture" height="40" width="40" alt="Profile picture" />
 
                         <div class="dropdown-menu p-4 dropdown-menu-end" style="width: 300px;">
-                            <p class="font-weight-bold text-center" id="user-name" style="margin-bottom: 0px;">Dauren Delmukhambetov</p>
-                            <p class="text-muted text-center" id="user-email"><small>dauren.del@gmail.com</small></p>
+                            <p class="font-weight-bold text-center" id="user-name" style="margin-bottom: 0px;">Username</p>
+                            <p class="text-muted text-center" id="user-email"><small>username@example.com</small></p>
                         </div>
 
 
@@ -90,10 +55,7 @@ document.addEventListener('submit', (e) => {
                         <div class="dropdown-menu p-4 dropdown-menu-end" style="width: 300px;">
                             <p class="font-weight-bold text-center" style="margin-bottom: 0px;">You need to sign in using your Google account</p>
                         </div>
-
-
                     </div>
-
                 </div>
             </div>
 
@@ -107,13 +69,16 @@ document.addEventListener('submit', (e) => {
                                aria-describedby="emailHelp"
                                placeholder="https://kazneb.kz/bookView/view/?brId=1160737&simple=true&lang=kk">
                     </div>
-                    <div class="alert alert-success" role="alert" style="display:none"></div>
+                    <div class="alert alert-success" role="alert" id="message-success" style="display:none"></div>
+                    <div class="alert alert-warning" role="alert" id="message-warning" style="display:none"></div>
 
                     <div class="d-grid gap-2 col-4 mx-auto">
                         <a class="btn btn-primary" role="button" id="sign-in-button" href="https://oqu-kerek-api.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=5cmlljeevjm8mh9ujlfdcicuci&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Fmaster.d2os6k5rlbet0g.amplifyapp.com%2Fcallback">
                             <img src="images/btn_google_dark_normal_ios.svg" height="25" alt="Google icon" /> Sign In with Google
                         </a>
-                        <button type="submit" class="btn btn-primary" id="download-button" disabled>Download</button>
+                        <button type="submit" class="btn btn-primary" id="download-button" disabled>
+                            Download
+                        </button>
                     </div>
                 </form>
             </div>
@@ -126,6 +91,44 @@ document.addEventListener('submit', (e) => {
 </main>
 
 <script>
+
+document.addEventListener('submit', (e) => {
+    const form = new FormData(e.target);
+    const requestBody = new Object();
+    requestBody.url = form.get('book-view-url');
+    const token = sessionStorage.getItem('id_token');
+
+    var submitButton = document.getElementById('download-button');
+    console.log(submitButton)
+    submitButton.setAttribute('disabled', '');
+
+    fetch('https://18xc0k8n6c.execute-api.us-east-1.amazonaws.com/dev/books', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': token
+            },
+            body: JSON.stringify(requestBody),
+        })
+        .then((response) => {
+        submitButton.removeAttribute('disabled');
+        if (response.ok) {
+            var data = res.json();
+            let alert = document.getElementById("message-success");
+            alert.innerText = "The book " + data.title + " is loading, the link to download will be sent to your email"
+            alert.style.display = 'block'
+            } else {
+            let alert = document.getElementById("message-warning");
+            alert.innerText = "Error occurred while processing the request"
+            alert.style.display = 'block'
+            }
+        });
+
+    // Prevent the default form submit
+    e.preventDefault();
+});
+
 function authenticationPostProcessor() {
     const submitButton = document.getElementById('download-button');
     const signInButton = document.getElementById('sign-in-button');
