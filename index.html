@@ -99,7 +99,6 @@ document.addEventListener('submit', (e) => {
     const token = sessionStorage.getItem('id_token');
 
     var submitButton = document.getElementById('download-button');
-    console.log(submitButton)
     submitButton.setAttribute('disabled', '');
 
     fetch('https://18xc0k8n6c.execute-api.us-east-1.amazonaws.com/dev/books', {
@@ -114,7 +113,7 @@ document.addEventListener('submit', (e) => {
         .then((response) => {
         submitButton.removeAttribute('disabled');
         if (response.ok) {
-            var data = res.json();
+            var data = response.json();
             let alert = document.getElementById("message-success");
             alert.innerText = "The book " + data.title + " is loading, the link to download will be sent to your email"
             alert.style.display = 'block'
@@ -175,7 +174,6 @@ function initUserProfile() {
 
 let params = (new URL(document.location)).searchParams;
 let code = params.get("code");
-console.log(code)
 if (code) {
     sessionStorage.setItem('code', code);
 
