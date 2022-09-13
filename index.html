@@ -96,7 +96,7 @@ document.addEventListener('submit', (e) => {
     const form = new FormData(e.target);
     const requestBody = new Object();
     requestBody.url = form.get('book-view-url');
-    const token = sessionStorage.getItem('id_token');
+    const token = localStorage.getItem('de.oqukerek.id_token');
 
     var submitButton = document.getElementById('download-button');
     submitButton.setAttribute('disabled', '');
@@ -135,7 +135,7 @@ function authenticationPostProcessor() {
     const authUserDataSection = document.getElementById('authenticated-user-data-section');
     const unAuthUserDataSection = document.getElementById('unauthenticated-user-data-section');
 
-    if (sessionStorage.getItem('id_token')) {
+    if (localStorage.getItem('de.oqukerek.id_token')) {
         submitButton.removeAttribute('disabled');
         signInButton.style.display = 'none'
         unAuthUserDataSection.style.display = 'none'
@@ -159,24 +159,22 @@ function parseJwt(token) {
 };
 
 function initUserProfile() {
-    if (sessionStorage.getItem('picture')) {
-        document.getElementById('profile-picture').src = sessionStorage.getItem('picture');
+    if (localStorage.getItem('de.oqukerek.picture')) {
+        document.getElementById('profile-picture').src = localStorage.getItem('de.oqukerek.picture');
     }
 
-    if (sessionStorage.getItem('name')) {
-        document.getElementById('user-name').innerText = sessionStorage.getItem('name');
+    if (localStorage.getItem('de.oqukerek.name')) {
+        document.getElementById('user-name').innerText = localStorage.getItem('de.oqukerek.name');
     }
 
-    if (sessionStorage.getItem('email')) {
-        document.getElementById('user-email').innerText = sessionStorage.getItem('email');
+    if (localStorage.getItem('de.oqukerek.email')) {
+        document.getElementById('user-email').innerText = localStorage.getItem('de.oqukerek.email');
     }
 }
 
 let params = (new URL(document.location)).searchParams;
 let code = params.get("code");
 if (code) {
-    sessionStorage.setItem('code', code);
-
     var headers = new Headers();
     headers.append("Content-Type", "application/x-www-form-urlencoded");
 
@@ -196,13 +194,13 @@ if (code) {
     fetch("https://oqu-kerek-api.auth.us-east-1.amazoncognito.com/oauth2/token", requestOptions)
         .then(response => response.json())
         .then(result => {
-            sessionStorage.setItem('id_token', result.id_token);
-            sessionStorage.setItem('refresh_token', result.refresh_token);
+            localStorage.setItem('de.oqukerek.id_token', result.id_token);
+            localStorage.setItem('de.oqukerek.refresh_token', result.refresh_token);
             authenticationPostProcessor();
             var tokenPayload = parseJwt(result.id_token);
-            sessionStorage.setItem('picture', tokenPayload.picture);
-            sessionStorage.setItem('email', tokenPayload.email);
-            sessionStorage.setItem('name', tokenPayload.name);
+            localStorage.setItem('de.oqukerek.picture', tokenPayload.picture);
+            localStorage.setItem('de.oqukerek.email', tokenPayload.email);
+            localStorage.setItem('de.oqukerek.name', tokenPayload.name);
             initUserProfile();
         })
         .catch(error => console.log('error', error));
