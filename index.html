@@ -92,6 +92,11 @@
 
 <script>
 
+document.onload = function() {
+    authenticationPostProcessor();
+    initUserProfile();
+}
+
 document.addEventListener('submit', (e) => {
     const form = new FormData(e.target);
     const requestBody = new Object();
