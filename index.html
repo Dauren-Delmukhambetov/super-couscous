@@ -144,17 +144,18 @@ document.addEventListener('submit', (e) => {
         })
         .then((response) => {
         submitButton.removeAttribute('disabled');
-        if (response.ok) {
-            var data = response.json();
-            console.log(data)
-            let alert = document.getElementById("message-success");
-            alert.innerText = "The book " + data.title + " is loading, the link to download will be sent to your email"
-            alert.style.display = 'block'
-            } else {
+        if (!response.ok)  {
             let alert = document.getElementById("message-warning");
             alert.innerText = "Error occurred while processing the request"
             alert.style.display = 'block'
             }
+            return response.json();
+        })
+        .then((data) => {
+            console.log(data)
+            let alert = document.getElementById("message-success");
+            alert.innerText = "The book " + data.title + " is loading, the link to download will be sent to your email"
+            alert.style.display = 'block'
         });
 
     // Prevent the default form submit
