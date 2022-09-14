@@ -153,9 +153,12 @@ document.addEventListener('submit', (e) => {
         })
         .then((data) => {
             console.log(data)
-            let alert = document.getElementById("message-success");
+            let alert = document.getElementById("message-success")
             alert.innerText = "The book " + data.title + " is loading, the link to download will be sent to your email"
             alert.style.display = 'block'
+
+            document.getElementById("first-book-image").src = data.imageUrl
+            document.getElementById("first-book-title").innerText = data.title
         });
 
     // Prevent the default form submit
