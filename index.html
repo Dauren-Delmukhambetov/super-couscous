@@ -93,8 +93,16 @@
 <script>
 
 window.onload = function() {
-    authenticationPostProcessor();
-    initUserProfile();
+    if (localStorage.getItem('de.oqukerek.refresh_token')) {
+        const idToken = localStorage.getItem('de.oqukerek.id_token');
+        const tokenExpirationDateTime = new Date(parseJwt(idToken).exp * 1000);
+        const currentDateTime = new Date();
+        if (!idToken || tokenExpirationDate <= currentDateTime) {
+            refreshIdToken();
+        }
+        authenticationPostProcessor();
+        initUserProfile();
+    }
 }
 
 document.addEventListener('submit', (e) => {
@@ -176,6 +184,36 @@ function initUserProfile() {
 
     if (localStorage.getItem('de.oqukerek.email')) {
         document.getElementById('user-email').innerText = localStorage.getItem('de.oqukerek.email');
+    }
+}
+
+function refreshIdToken() {
+    const refreshToken = localStorage.getItem('de.oqukerek.refresh_token');
+    if (refreshToken) {
+        var headers = new Headers();
+        headers.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("grant_type", "refresh_token");
+        urlencoded.append("client_id", "5cmlljeevjm8mh9ujlfdcicuci");
+        urlencoded.append("refresh_token", refreshToken);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: urlencoded
+        };
+
+    fetch("https://oqu-kerek-api.auth.us-east-1.amazoncognito.com/oauth2/token", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            localStorage.setItem('de.oqukerek.id_token', result.id_token);
+            var tokenPayload = parseJwt(result.id_token);
+            localStorage.setItem('de.oqukerek.picture', tokenPayload.picture);
+            localStorage.setItem('de.oqukerek.email', tokenPayload.email);
+            localStorage.setItem('de.oqukerek.name', tokenPayload.name);
+        })
+        .catch(error => console.log('error', error));
     }
 }
 
