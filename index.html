@@ -84,33 +84,6 @@
             </div>
         </div>
 
-        <div class="container text-center">
-            <div class="row align-items-start">
-                <div class="col">
-                    <div class="card">
-                        <img src="..." class="card-img-top" alt="..." id="first-book-image">
-                        <div class="card-body">
-                            <h5 class="card-title" id="first-book-title"></h5>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-
-                </div>
-                <div class="col">
-
-                </div>
-                <div class="col">
-
-                </div>
-                <div class="col">
-                    One of three columns
-                </div>
-            </div>
-        </div>
-
         <footer class="pt-3 mt-4 text-muted border-top">
             &copy; 2022
         </footer>
@@ -156,9 +129,6 @@ document.addEventListener('submit', (e) => {
             let alert = document.getElementById("message-success")
             alert.innerText = "The book " + data.title + " is loading, the link to download will be sent to your email"
             alert.style.display = 'block'
-
-            document.getElementById("first-book-image").src = data.imageUrl
-            document.getElementById("first-book-title").innerText = data.title
         });
 
     // Prevent the default form submit
