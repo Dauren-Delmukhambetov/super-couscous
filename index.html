@@ -208,7 +208,7 @@ function loadUserHistory() {
       .then(books => {
             let history = "";
             for (const book of books) { history += buildBookCard(book); }
-            document.getElementsByClassName("pt-3 mt-4 text-muted border-top")[0].insertAdjacentHTML('beforeend', history);
+            document.getElementById("user-history-section").insertAdjacentHTML('beforeend', history);
        });
       }
 }
