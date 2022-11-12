@@ -154,6 +154,7 @@ document.addEventListener('submit', (e) => {
         .then((response) => {
         submitButton.removeAttribute('disabled');
         if (!response.ok)  {
+            document.getElementById("message-success").style.display = 'none';
             let alert = document.getElementById("message-warning");
             alert.innerText = "Error occurred while processing the request"
             alert.style.display = 'block'
@@ -161,10 +162,11 @@ document.addEventListener('submit', (e) => {
             return response.json();
         })
         .then((data) => {
-            console.log(data)
-            let alert = document.getElementById("message-success")
-            alert.innerText = "The book " + data.title + " is loading, the link to download will be sent to your email"
-            alert.style.display = 'block'
+            document.getElementById("message-warning").style.display = 'none';
+            let alert = document.getElementById("message-success");
+            alert.innerText = "The book " + data.title + " is loading, the link to download will be available in the history section";
+            alert.style.display = 'block';
+            loadUserHistory();
         });
 
     // Prevent the default form submit
@@ -225,20 +227,30 @@ function loadUserHistory() {
       })
       .then(response => response.json())
       .then(books => {
-            let history = "";
-            for (const book of books) { history += buildBookCard(book); }
-            document.getElementById("user-history-items").insertAdjacentHTML('beforeend', history);
-            document.getElementById("user-history-section").style.display = 'block'
+            for (let i = 0; i < books.length; i++) { renderBookCard(books[i], i); }
+            document.getElementById("user-history-section").style.display = 'block';
        });
       }
 }
 
-function buildBookCard(book) {
-return '<div class="col"> <div class="card h-100">' +
-    '<img src="'+ book.imageUrl +'" class="card-img-top" alt="' + book.title + '">' +
+function buildBookCard(book, index) {
+    return '<div class="col"> <div class="card h-100" id="user-history-item-' + index + '">' + buildBookCardContent(book) +'</div> </div>';
+}
+
+function buildBookCardContent(book) {
+    return '<img src="'+ book.imageUrl +'" class="card-img-top" alt="' + book.title + '">' +
     '<div class="card-body"><h5 class="card-title">' + (book.title ? book.title : '') + '</h5>' +
                             '<p class="card-text">' + (book.author? book.author : '') + '</p>' +
-                        '</div> </div> </div>'
+                        '</div>';
+}
+
+function renderBookCard(book, index) {
+    const bookCard = document.getElementById("user-history-item-" + index);
+    if (bookCard) {
+        bookCard.innerHTML = buildBookCardContent(book);
+    } else {
+        document.getElementById("user-history-items").insertAdjacentHTML('afterbegin', bookCard);
+    }
 }
 
 function refreshIdToken() {
