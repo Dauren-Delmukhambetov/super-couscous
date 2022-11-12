@@ -249,7 +249,7 @@ function renderBookCard(book, index) {
     if (bookCard) {
         bookCard.innerHTML = buildBookCardContent(book);
     } else {
-        document.getElementById("user-history-items").insertAdjacentHTML('afterbegin', buildBookCard(book, index));
+        document.getElementById("user-history-items").insertAdjacentHTML('beforeend', buildBookCard(book, index));
     }
 }
 
