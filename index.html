@@ -97,12 +97,34 @@
             </div>
         </div>
 
-        <div class="card" id="user-history-section" style="display:none">
+        <div class="card" id="user-history-section">
             <div class="card-header">
                 Last requested books
             </div>
             <div class="card-body">
                 <div class="row row-cols-1 row-cols-md-5 g-4" id="user-history-items">
+
+                    <div class="col">
+                        <div class="card h-100" id="user-history-item-1"><img
+                                src="https://kazneb.kz/FileStore/dataFiles/3a/f1/1042140/content/bigcover.png?time=1668289893643&amp;key=a781fc790661a010c75f066337d67b1d"
+                                class="card-img-top" alt="Фонотактические модели арабизмов в казахском языке">
+                            <div class="card-body"><h5 class="card-title">Фонотактические модели арабизмов в казахском
+                                языке</h5>
+                                <p class="card-text">Кенесбаева, С. С.</p>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <div class="spinner-border spinner-border-sm text-success" role="status" style="display:none">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+
+                                    <button type="button" class="btn btn-success btn-sm">Download</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -241,7 +263,17 @@ function buildBookCardContent(book) {
     return '<img src="'+ book.imageUrl +'" class="card-img-top" alt="' + book.title + '">' +
     '<div class="card-body"><h5 class="card-title">' + (book.title ? book.title : '') + '</h5>' +
                             '<p class="card-text">' + (book.author? book.author : '') + '</p>' +
+                            buildBookCardButton(book) +
                         '</div>';
+}
+
+function buildBookCardButton(book) {
+    return '<div class="d-grid gap-2 d-md-flex justify-content-md-end">' +
+           `    <div class="spinner-border spinner-border-sm text-success" id="user-history-item-${book.id}-status" role="status" style="display:${book.status=="Ready"?'none':'block'}">` +
+           '        <span class="visually-hidden">Loading...</span>' +
+           '    </div>' +
+           `    <button type="button" class="btn btn-success btn-sm" id="user-history-item-${book.id}-download" style="display:${book.status=="Ready"?'block':'none'}">Download</button> ` +
+           '</div>';
 }
 
 function renderBookCard(book, index) {
@@ -316,6 +348,8 @@ if (code) {
         })
         .catch(error => console.log('error', error));
 }
+
+
 
 </script>
 
