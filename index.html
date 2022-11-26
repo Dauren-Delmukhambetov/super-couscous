@@ -250,11 +250,7 @@ function buildBookCardContent(book) {
 
 function buildBookCardFooter(book) {
     return '<div class="card-footer"> <div class="d-grid gap-2 d-md-flex justify-content-md-end">' +
-           `    <div class="spinner-border spinner-border-sm text-success" id="user-history-item-${book.id}-status" role="status" style="display:${book.status=="Ready"?'none':'block'}">` +
-           '        <span class="visually-hidden">Loading...</span>' +
-           '    </div>' +
-           `    <button type="button" class="btn btn-success btn-sm" id="user-history-item-${book.id}-download" style="display:${book.status=="Ready"?'block':'none'}">Download</button> ` +
-           '</div></div>';
+           buildDownloadButton(book) + '</div></div>';
 }
 
 function buildDownloadButton(book) {
