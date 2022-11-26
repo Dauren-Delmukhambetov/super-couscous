@@ -257,6 +257,12 @@ function buildBookCardFooter(book) {
            '</div></div>';
 }
 
+function buildDownloadButton(book) {
+    return book.status == 'Ready' ?
+    `<button type="button" class="btn btn-success btn-sm" id="user-history-item-${book.id}-download">Download</button> ` :
+    `<button type="button" class="btn btn-warning btn-sm"> <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>`
+}
+
 function renderBookCard(book, index) {
     const bookCard = document.getElementById("user-history-item-" + index);
     if (bookCard) {
