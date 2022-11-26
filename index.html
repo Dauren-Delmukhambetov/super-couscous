@@ -262,7 +262,7 @@ function buildDownloadButton(book) {
 function renderBookCard(book, index) {
     const bookCard = document.getElementById("user-history-item-" + index);
     if (bookCard) {
-        bookCard.innerHTML = buildBookCardContent(book);
+        bookCard.innerHTML = buildBookCardContent(book) + buildBookCardFooter(book);
     } else {
         document.getElementById("user-history-items").insertAdjacentHTML('beforeend', buildBookCard(book, index));
     }
