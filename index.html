@@ -218,7 +218,6 @@ function initUserProfile() {
     }
 }
 
-
 function loadUserHistory() {
     const idToken = localStorage.getItem('de.oqukerek.id_token');
       if (idToken) {
@@ -229,10 +228,17 @@ function loadUserHistory() {
       .then(response => response.json())
       .then(books => {
             for (let i = 0; i < books.length; i++) { renderBookCard(books[i], i); }
+            if (books.some(isInProgress)) { console.log('In Progress'); delayUserHistoryUpdate(books) }
             document.getElementById("user-history-section").style.display = 'block';
        });
       }
 }
+
+function delayUserHistoryUpdate(books) {
+    setTimeout(() => { loadUserHistory(); }, 10000);
+}
+
+const isInProgress = (book) => book.status == 'InProgress';
 
 function buildBookCard(book, index) {
     return '<div class="col"> <div class="card h-100" id="user-history-item-' + index + '">' +
@@ -276,7 +282,6 @@ function downloadBook(bookId) {
       })
       .then(response => response.json())
       .then(response => {
-            console.log(response.downloadLink);
             window.open(response.downloadLink, '_blank').focus();
        });
       }
@@ -299,7 +304,7 @@ function refreshIdToken() {
             body: urlencoded
         };
 
-    fetch("https://oqu-kerek-api.auth.us-east-1.amazoncognito.com/oauth2/token", requestOptions)
+    return fetch("https://oqu-kerek-api.auth.us-east-1.amazoncognito.com/oauth2/token", requestOptions)
         .then(response => response.json())
         .then(result => {
             localStorage.setItem('de.oqukerek.id_token', result.id_token);
