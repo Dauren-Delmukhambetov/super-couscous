@@ -97,7 +97,7 @@
             </div>
         </div>
 
-        <div class="card" id="user-history-section">
+        <div class="card" id="user-history-section" style="display:none">
             <div class="card-header">
                 Last requested books
             </div>
@@ -126,11 +126,12 @@ window.onload = function() {
         const tokenExpirationDateTime = new Date(parseJwt(idToken).exp * 1000);
         const currentDateTime = new Date();
         if (!idToken || tokenExpirationDateTime <= currentDateTime) {
-            refreshIdToken();
-        }
+            refreshIdToken(() => { authenticationPostProcessor(); initUserProfile(); loadUserHistory(); } );
+        } else {
         authenticationPostProcessor();
         initUserProfile();
         loadUserHistory();
+        }
     }
 }
 
@@ -222,8 +223,7 @@ function loadUserHistory() {
     const idToken = localStorage.getItem('de.oqukerek.id_token');
       if (idToken) {
       fetch('https://18xc0k8n6c.execute-api.us-east-1.amazonaws.com/dev/books', {
-        headers: {
-        'Authorization': idToken }
+        headers: { 'Authorization': idToken }
       })
       .then(response => response.json())
       .then(books => {
@@ -287,7 +287,7 @@ function downloadBook(bookId) {
       }
 }
 
-function refreshIdToken() {
+function refreshIdToken(refreshPostProcessor) {
     const refreshToken = localStorage.getItem('de.oqukerek.refresh_token');
     if (refreshToken) {
         var headers = new Headers();
@@ -312,6 +312,7 @@ function refreshIdToken() {
             localStorage.setItem('de.oqukerek.picture', tokenPayload.picture);
             localStorage.setItem('de.oqukerek.email', tokenPayload.email);
             localStorage.setItem('de.oqukerek.name', tokenPayload.name);
+            refreshPostProcessor();
         })
         .catch(error => console.log('error', error));
     }
