@@ -8,6 +8,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
 
     <!-- Favicons -->
     <meta name="theme-color" content="#712cf9">
@@ -54,12 +55,7 @@
 
                         <div class="dropdown-toggle rounded float-end" data-bs-toggle="dropdown" aria-expanded="false"
                              data-bs-auto-close="outside">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                 class="bi bi-person-circle" viewBox="0 0 16 16">
-                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-                                <path fill-rule="evenodd"
-                                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-                            </svg>
+                            <i class="bi bi-person-circle" style="font-size: 1.8rem;"></i>
                         </div>
 
                         <div class="dropdown-menu p-4 dropdown-menu-end" style="width: 300px;">
@@ -75,23 +71,31 @@
         <div class="p-5 mb-5 bg-light rounded-3">
             <div class="container-fluid py-5">
                 <form>
-                    <div class="mb-5">
+                    <div class="input-group mb-5">
+                        <!--span class="input-group-text" id="basic-addon3">https://kazneb.kz</span-->
                         <input type="text" class="form-control" name="book-view-url" id="book-view-url"
-                               aria-describedby="emailHelp"
+                               aria-describedby="basic-addon3"
                                placeholder="https://kazneb.kz/bookView/view/?brId=1160737&simple=true&lang=kk">
+
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#howToUseModal">
+                            <i class="bi bi-question-circle"></i>
+                        </button>
+
+                        <button class="btn btn-primary" type="submit" id="download-button" disabled>
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+
+
                     </div>
+
                     <div class="alert alert-success" role="alert" id="message-success" style="display:none"></div>
                     <div class="alert alert-warning" role="alert" id="message-warning" style="display:none"></div>
 
                     <div class="d-grid gap-2 col-4 mx-auto">
                         <a class="btn btn-primary" role="button" id="sign-in-button"
                            href="https://oqu-kerek-api.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=5cmlljeevjm8mh9ujlfdcicuci&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Foqukerek.de%2Fcallback">
-                            <img src="images/btn_google_dark_normal_ios.svg" height="25" alt="Google icon"/> Sign In
-                            with Google
+                            <i class="bi bi-google"></i> Sign In with Google
                         </a>
-                        <button type="submit" class="btn btn-primary" id="download-button" disabled>
-                            Download
-                        </button>
                     </div>
                 </form>
             </div>
@@ -116,11 +120,33 @@
             &copy; 2022
         </footer>
     </div>
+
+    <div class="modal fade" id="howToUseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">How it works</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul>
+                        <li>Go to the kazneb.kz</li>
+                        <li>Find a book you need</li>
+                        <li>Open in view mode</li>
+                        <li>Copy book URL address</li>
+                        <li>Paste it in input field and press Go (->)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <script>
 
 window.onload = function() {
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
     if (localStorage.getItem('de.oqukerek.refresh_token')) {
         const idToken = localStorage.getItem('de.oqukerek.id_token');
         const tokenExpirationDateTime = new Date(parseJwt(idToken).exp * 1000);
@@ -136,13 +162,14 @@ window.onload = function() {
 }
 
 document.addEventListener('submit', (e) => {
+    var submitButton = document.getElementById('download-button');
+    submitButton.setAttribute('disabled', '');
+    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
     const form = new FormData(e.target);
     const requestBody = new Object();
     requestBody.url = form.get('book-view-url');
     const token = localStorage.getItem('de.oqukerek.id_token');
-
-    var submitButton = document.getElementById('download-button');
-    submitButton.setAttribute('disabled', '');
 
     fetch('https://18xc0k8n6c.execute-api.us-east-1.amazonaws.com/dev/books', {
             method: 'POST',
@@ -155,7 +182,9 @@ document.addEventListener('submit', (e) => {
         })
         .then((response) => {
         submitButton.removeAttribute('disabled');
+        submitButton.innerHTML = 'Download';
         if (!response.ok)  {
+            console.log('error response', response);
             document.getElementById("message-success").style.display = 'none';
             let alert = document.getElementById("message-warning");
             alert.innerText = "Error occurred while processing the request"
@@ -261,7 +290,7 @@ function buildBookCardFooter(book) {
 
 function buildDownloadButton(book) {
     return book.status == 'Ready' ?
-    `<button type="button" class="btn btn-success btn-sm" id="user-history-item-${book.id}-download" onclick="downloadBook(${book.id})">Download</button> ` :
+    `<button type="button" class="btn btn-success btn-sm" id="user-history-item-${book.id}-download" onclick="downloadBook(${book.id})"><i class="bi bi-download"></i></button> ` :
     `<button type="button" class="btn btn-warning btn-sm"> <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>`
 }
 
