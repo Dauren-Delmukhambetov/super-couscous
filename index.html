@@ -182,7 +182,7 @@ document.addEventListener('submit', (e) => {
         })
         .then((response) => {
         submitButton.removeAttribute('disabled');
-        submitButton.innerHTML = 'Download';
+        submitButton.innerHTML = '<i class="bi bi-arrow-right"></i>';
         if (!response.ok)  {
             console.log('error response', response);
             document.getElementById("message-success").style.display = 'none';
