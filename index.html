@@ -71,8 +71,7 @@
         <div class="p-5 mb-5 bg-light rounded-3">
             <div class="container-fluid py-5">
                 <form>
-                    <div class="input-group mb-5">
-                        <!--span class="input-group-text" id="basic-addon3">https://kazneb.kz</span-->
+                    <div class="input-group mb-5 shadow-lg">
                         <input type="text" class="form-control" name="book-view-url" id="book-view-url"
                                aria-describedby="basic-addon3"
                                placeholder="https://kazneb.kz/bookView/view/?brId=1160737&simple=true&lang=kk">
@@ -122,20 +121,58 @@
     </div>
 
     <div class="modal fade" id="howToUseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">How it works</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
                 <div class="modal-body">
-                    <ul>
-                        <li>Go to the kazneb.kz</li>
-                        <li>Find a book you need</li>
-                        <li>Open in view mode</li>
-                        <li>Copy book URL address</li>
-                        <li>Paste it in input field and press Go (->)</li>
-                    </ul>
+                    <div id="carouselExampleCaptions" class="carousel carousel-dark slide" data-bs-ride="false">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="/images/sign-in.png" class="d-block img-fluid" alt="Sign-in with Google account">
+                                <div class="carousel-caption d-none d-md-block bg-light bg-gradient bg-opacity-50">
+                                    <h5>Sign-in via Google account</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/images/kazneb-search.png" class="d-block img-fluid" alt="Go to the kazneb.kz, find a book, and go to the view page">
+                                <div class="carousel-caption d-none d-md-block bg-light bg-gradient bg-opacity-50">
+                                    <h5>Go to the <a href="https://kazneb.kz/en" target="_blank">kazneb.kz</a>, find a book, and go to the view page</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/images/book-view.png" class="d-block img-fluid" alt="Copy the view page address">
+                                <div class="carousel-caption d-none d-md-block bg-light bg-gradient bg-opacity-50">
+                                    <h5>Copy the view page address</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/images/book-download.png" class="d-block img-fluid" alt="Paste the view page address and press Go">
+                                <div class="carousel-caption d-none d-md-block bg-light bg-gradient bg-opacity-50">
+                                    <h5>Paste the view page address and press Go</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/images/book-history.png" class="d-block img-fluid" alt="Check out the book in history section">
+                                <div class="carousel-caption d-none d-md-block bg-light bg-gradient bg-opacity-50">
+                                    <h5>Check out the book in history section</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
